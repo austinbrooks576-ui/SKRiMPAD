@@ -1,0 +1,310 @@
+<!-- The First-Riff Method — FREE DEMO (Lessons 0–1 + chromatic tuner + buy CTA) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The First-Riff Method — Free Preview</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Spline+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap');
+  :root{
+    --bg:#15120D; --surface:#1E1A13; --surface-2:#272117;
+    --ink:#F3EADB; --muted:#A2937D; --line:#3A3225;
+    --amp:#FF8A3D; --amp-soft:rgba(255,138,61,.13);
+    --unlock:#A8E84B; --unlock-soft:rgba(168,232,75,.12); --string:#C9B89A;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Spline Sans',system-ui,sans-serif;font-size:17px;line-height:1.65;background-image:radial-gradient(120% 80% at 50% -10%, rgba(255,138,61,.10), transparent 60%)}
+  .wrap{max-width:880px;margin:0 auto;padding:0 24px}
+  .mono{font-family:'JetBrains Mono',monospace}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--amp)}
+  h2{font-family:'Archivo',sans-serif;font-weight:900;font-size:clamp(28px,5vw,42px);letter-spacing:-.02em;line-height:1.02;margin:0 0 18px}
+  h3{font-family:'Archivo',sans-serif;font-weight:700;font-size:21px;margin:0 0 8px}
+  p{margin:0 0 16px} a{color:var(--amp)}
+
+  .progbar{position:sticky;top:0;z-index:50;background:rgba(21,18,13,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .progbar .inner{max-width:880px;margin:0 auto;padding:11px 24px;display:flex;align-items:center;gap:16px}
+  .progbar .count{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;color:var(--unlock);white-space:nowrap}
+  .progbar .count .pre{color:var(--muted)}
+  .track{flex:1;height:8px;background:var(--surface-2);border-radius:20px;overflow:hidden;border:1px solid var(--line)}
+  .fill{height:100%;width:0%;background:linear-gradient(90deg,var(--amp),var(--unlock));border-radius:20px;transition:width .5s cubic-bezier(.2,.9,.3,1.2)}
+
+  /* tuner */
+  .tuner-toggle{font-family:'JetBrains Mono';font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;background:var(--surface-2);color:var(--amp);border:1px solid var(--line);border-radius:20px;padding:7px 13px;white-space:nowrap;transition:.15s}
+  .tuner-toggle:hover{border-color:var(--amp)}
+  .tuner-toggle[aria-expanded="true"]{background:var(--amp);color:#1a1109;border-color:var(--amp)}
+  .tuner-toggle:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+  .tuner-panel{max-height:0;overflow:hidden;transition:max-height .42s cubic-bezier(.2,.8,.2,1)}
+  .tuner-panel.open{max-height:560px}
+  .tuner-inner{max-width:880px;margin:0 auto;padding:20px 24px 24px;border-top:1px solid var(--line)}
+  .trow1{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+  .tnote{font-family:'Archivo';font-weight:900;font-size:52px;line-height:1;color:var(--amp);min-width:110px;text-align:center;transition:color .12s;font-variant-numeric:tabular-nums}
+  .tnote.intune{color:var(--unlock)}
+  .tmeterwrap{flex:1;min-width:220px}
+  .tmeter{position:relative;height:14px;background:var(--surface-2);border:1px solid var(--line);border-radius:20px}
+  .tzone{position:absolute;left:44%;right:44%;top:0;bottom:0;background:var(--unlock-soft);border-radius:4px}
+  .tcenter{position:absolute;left:50%;top:-5px;bottom:-5px;width:2px;background:var(--muted);transform:translateX(-1px)}
+  .tneedle{position:absolute;left:50%;top:-6px;bottom:-6px;width:5px;border-radius:3px;background:var(--amp);transform:translateX(-2.5px);transition:left .1s ease,background .12s}
+  .tneedle.intune{background:var(--unlock);box-shadow:0 0 12px var(--unlock-soft)}
+  .tlabels{display:flex;justify-content:space-between;font-family:'JetBrains Mono';font-size:11px;color:var(--muted);margin-top:7px}
+  .tcontrols{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:18px}
+  .tstatus{font-family:'JetBrains Mono';font-size:12px;color:var(--muted)}
+  .tstrings{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+  .tchip{font-family:'JetBrains Mono';font-weight:700;font-size:14px;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:var(--muted);border-radius:8px;padding:9px 14px;min-width:42px;text-align:center;transition:.12s}
+  .tchip:hover{color:var(--ink);border-color:var(--muted)} .tchip:focus-visible{outline:3px solid var(--amp);outline-offset:2px}
+  .tchip.near{border-color:var(--amp);color:var(--amp)}
+  .tchip.intune{border-color:var(--unlock);color:var(--unlock);background:var(--unlock-soft)}
+  .thint{font-family:'JetBrains Mono';font-size:11px;color:var(--muted);margin-top:12px;opacity:.85}
+
+  .hero{padding:72px 0 56px;border-bottom:1px solid var(--line)}
+  .hero .eyebrow{margin-bottom:22px}
+  .hero h1{font-family:'Archivo',sans-serif;font-weight:900;font-size:clamp(44px,10vw,92px);letter-spacing:-.035em;line-height:.9;margin:0}
+  .hero h1 .amp{color:var(--amp)}
+  .thesis{font-size:clamp(19px,3vw,26px);font-weight:500;max-width:600px;margin:24px 0 0;line-height:1.3}
+  .thesis b{color:var(--unlock);font-weight:600}
+  .hero-sub{color:var(--muted);max-width:560px;margin-top:18px;font-size:16px}
+  .tuner-nudge{margin-top:22px;font-family:'JetBrains Mono';font-size:13px;color:var(--amp);border:1px dashed var(--line);border-radius:10px;padding:12px 16px;display:inline-block}
+
+  section{padding:56px 0;border-bottom:1px solid var(--line)}
+  .lesson{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:32px;margin-top:8px}
+  .lesson .tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--bg);background:var(--amp);padding:4px 10px;border-radius:20px;margin-bottom:16px}
+  .lesson h3{font-size:25px;margin-bottom:14px}
+  .step{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--amp);text-transform:uppercase;margin:26px 0 8px}
+  .tab{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:18px 20px;overflow-x:auto;margin:6px 0 4px}
+  .tab pre{font-family:'JetBrains Mono',monospace;font-size:14px;line-height:1.7;margin:0;color:var(--string);white-space:pre}
+  .tab .hl{color:var(--amp);font-weight:700}
+  .cap{font-size:13px;color:var(--muted);margin-top:8px}
+  .fbwrap{display:flex;gap:28px;flex-wrap:wrap;align-items:center;margin:10px 0}
+  .fb{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:16px}
+  .fbname{font-family:'Archivo',sans-serif;font-weight:700;text-align:center;margin-bottom:10px;font-size:15px}
+  .callus{display:flex;gap:14px;align-items:flex-start;background:var(--surface-2);border-left:3px solid var(--amp);border-radius:0 10px 10px 0;padding:18px;margin-top:24px}
+  .callus .icon{font-size:22px;line-height:1}.callus p{margin:0;font-size:14.5px;color:var(--muted)}.callus b{color:var(--ink)}
+  .payoff{background:var(--unlock-soft);border:1px solid rgba(168,232,75,.35);border-radius:12px;padding:22px;margin-top:24px}
+  .payoff .step{color:var(--unlock)}
+  .unlock-btn{font-family:'Archivo',sans-serif;font-weight:700;font-size:15px;cursor:pointer;background:var(--unlock);color:#13260a;border:none;border-radius:10px;padding:13px 22px;margin-top:6px;transition:transform .12s ease,filter .12s ease}
+  .unlock-btn:hover{filter:brightness(1.07)}.unlock-btn:active{transform:scale(.97)}
+  .unlock-btn:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+  .unlocked{display:none;margin-top:16px;animation:pop .35s cubic-bezier(.2,.9,.3,1.4)}
+  .unlocked.show{display:block}
+  @keyframes pop{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:none}}
+  .unlocked .big{font-family:'Archivo',sans-serif;font-weight:900;font-size:22px;color:var(--unlock);display:flex;align-items:center;gap:10px}
+  .unlocked ul{margin:10px 0 0;padding-left:20px;color:var(--ink)}.unlocked li{margin:4px 0}
+  .btn{font-family:'Archivo';font-weight:700;font-size:15px;cursor:pointer;border-radius:10px;padding:13px 24px;border:1px solid var(--line);background:var(--surface);color:var(--ink);transition:transform .1s,filter .12s}
+  .btn:hover{filter:brightness(1.12)}.btn:active{transform:scale(.97)}
+  .btn.primary{background:var(--amp);color:#1a1109;border-color:var(--amp)}
+  .btn:focus-visible{outline:3px solid var(--amp);outline-offset:2px}
+
+  /* CTA */
+  .cta{text-align:center;border-bottom:none}
+  .cta .eyebrow{color:var(--unlock)}
+  .cta-card{border:1px solid var(--amp);background:var(--amp-soft);border-radius:18px;padding:40px 28px;margin-top:30px;transition:box-shadow .5s,transform .5s}
+  .cta-card.show{box-shadow:0 0 70px rgba(255,138,61,.2);transform:translateY(-2px)}
+  .cta-card h2{margin-bottom:10px}
+  .cta-list{display:flex;flex-direction:column;gap:8px;max-width:440px;margin:22px auto;text-align:left}
+  .cta-list .row{display:flex;gap:10px;align-items:flex-start;color:var(--ink);font-size:15px}
+  .cta-list .row span{color:var(--unlock);font-weight:700}
+  .price{font-family:'Archivo';font-weight:900;font-size:46px;color:var(--ink);margin-top:10px}
+  .price small{font-size:16px;color:var(--muted);font-weight:500}
+  .cta-btn{display:inline-block;font-family:'Archivo';font-weight:900;font-size:18px;text-decoration:none;background:var(--amp);color:#1a1109;border-radius:12px;padding:16px 32px;margin-top:18px;transition:transform .12s,filter .12s}
+  .cta-btn:hover{filter:brightness(1.07)} .cta-btn:active{transform:scale(.97)}
+  .cta-nudge{font-family:'JetBrains Mono';font-size:12px;color:var(--unlock);margin-top:16px;min-height:16px}
+
+  footer{padding:40px 0 80px;text-align:center;color:var(--muted);font-size:13px;font-family:'JetBrains Mono'}
+</style>
+
+<div class="progbar">
+  <div class="inner">
+    <div class="count"><span class="pre">FREE LESSONS</span> <span id="pcount">0</span> / <span id="ptotal">0</span></div>
+    <div class="track"><div class="fill" id="pfill"></div></div>
+    <button class="tuner-toggle" id="tunerToggle" aria-expanded="false" onclick="toggleTunerPanel(this)">🎸 Tuner</button>
+  </div>
+  <div class="tuner-panel" id="tunerPanel">
+    <div class="tuner-inner">
+      <div class="trow1">
+        <div class="tnote" id="tNote">—</div>
+        <div class="tmeterwrap">
+          <div class="tmeter"><div class="tzone"></div><div class="tcenter"></div><div class="tneedle" id="tNeedle"></div></div>
+          <div class="tlabels"><span>♭ flat</span><span>in tune</span><span>sharp ♯</span></div>
+        </div>
+      </div>
+      <div class="tcontrols">
+        <button class="btn primary" id="tunerStart" onclick="toggleTuner(this)">Start listening</button>
+        <span class="tstatus" id="tunerStatus">Tap start and allow mic access, then pluck a string.</span>
+      </div>
+      <div class="tstrings" id="tStrings"></div>
+      <div class="thint">No mic? Tap any string above to hear its true pitch and tune by ear.</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Free preview · 2 lessons + a free tuner</div>
+    <h1>THE<br>FIRST-RIFF<br><span class="amp">METHOD</span></h1>
+    <p class="thesis">You'll sound like <b>music</b> in the next five minutes — before you learn a single note or read a single staff.</p>
+    <p class="hero-sub">This is the free taste: your first two lessons, plus a built-in chromatic tuner that's yours to keep. The full method carries you all the way to your first solo.</p>
+    <div class="tuner-nudge">↑ Out of tune? Tap <b>🎸 Tuner</b> in the bar above — free, no signup.</div>
+  </header>
+
+  <!-- LESSON 0 -->
+  <section>
+    <div class="eyebrow">Lesson 1 · five minutes in</div>
+    <h2>The First Riff</h2>
+    <div class="lesson">
+      <span class="tag">⏱ 5 minutes · no theory</span>
+      <h3>Before anything else, you're going to sound dangerous.</h3>
+      <p>No tuning lecture, no how-to-hold-a-pick essay. Rest the guitar on your leg and let's make a riff. We're using the two <em>thickest</em> strings — the two closest to the ceiling. Ignore the other four. They don't exist yet.</p>
+      <div class="step">Step 1 — find the home sound</div>
+      <p>Pluck the thickest string (the 6th) without pressing anything. That low note is home base. Hit it four times, steady. You're playing.</p>
+      <div class="step">Step 2 — add one finger</div>
+      <p>Press the thickest string at the <strong>3rd fret</strong> with one finger. Pluck it. A two-note vocabulary — one more than your first riff needs.</p>
+      <div class="step">Step 3 — play the riff</div>
+      <div class="tab"><pre>E|--0---0---<span class="hl">3</span>---0----0--<span class="hl">3</span>--<span class="hl">3</span>---|
+   open    3rd      (repeat, slow & ugly)</pre></div>
+      <p class="cap"><span class="mono">0</span> = open, no finger. One string only. Speed is the last thing to arrive, never the first.</p>
+      <div class="callus"><span class="icon">🔥</span><p><b>Callus Countdown, Day 1.</b> Your fingertip will sting — that's skin building armor, not damage. About 7–10 short days to toughen. Most quitters quit right here, in the part nobody warned them about. You've been warned: push through one week and the pain never comes back.</p></div>
+      <div class="payoff"><div class="step">The payoff</div>
+        <p style="margin:0">That low, one-string pattern is the exact engine behind the most famous beginner riffs in rock — the "everyone's first riff" sound. Day one. Five minutes. One finger.</p>
+        <button class="unlock-btn" onclick="markPlayed(this)">▶ Mark it played</button>
+        <div class="unlocked"><div class="big">🎸 RIFF #1 UNLOCKED</div><ul><li>Riffs you can build toward: <strong>1</strong></li><li>Theory you had to learn first: <strong>0</strong></li><li>Next: the same idea, with <em>power</em> →</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LESSON 1 -->
+  <section>
+    <div class="eyebrow">Lesson 2 · the power zone</div>
+    <h2>The Power Chord</h2>
+    <div class="lesson">
+      <span class="tag">⏱ 10 minutes · still no theory</span>
+      <h3>One shape. Move it anywhere. Instant rock.</h3>
+      <p>A power chord is two fingers that make any spot on the neck sound huge — the single most reused shape in rock, punk, and metal. It dodges the hard chords because it doesn't care what key you're in.</p>
+      <div class="fbwrap">
+        <div class="fb"><div class="fbname">Power Chord ("5" shape)</div>
+          <svg width="150" height="180" viewBox="0 0 150 180" role="img" aria-label="Power chord: index on 6th string 3rd fret, ring on 5th string 5th fret">
+            <rect x="25" y="28" width="100" height="5" fill="#C9B89A"/>
+            <g stroke="#5a5040" stroke-width="1.5"><line x1="25" y1="33" x2="25" y2="168"/><line x1="45" y1="33" x2="45" y2="168"/><line x1="65" y1="33" x2="65" y2="168"/><line x1="85" y1="33" x2="85" y2="168"/><line x1="105" y1="33" x2="105" y2="168"/><line x1="125" y1="33" x2="125" y2="168"/></g>
+            <g stroke="#3A3225" stroke-width="1.5"><line x1="25" y1="68" x2="125" y2="68"/><line x1="25" y1="103" x2="125" y2="103"/><line x1="25" y1="138" x2="125" y2="138"/><line x1="25" y1="168" x2="125" y2="168"/></g>
+            <circle cx="25" cy="85" r="9" fill="#FF8A3D"/><text x="25" y="89" text-anchor="middle" font-size="11" font-weight="700" fill="#15120D" font-family="JetBrains Mono">1</text>
+            <circle cx="45" cy="120" r="9" fill="#FF8A3D"/><text x="45" y="124" text-anchor="middle" font-size="11" font-weight="700" fill="#15120D" font-family="JetBrains Mono">3</text>
+            <g font-family="JetBrains Mono" font-size="12" fill="#6b5f4a" text-anchor="middle"><text x="65" y="24">×</text><text x="85" y="24">×</text><text x="105" y="24">×</text><text x="125" y="24">×</text></g>
+            <text x="14" y="89" text-anchor="middle" font-size="10" fill="#A2937D" font-family="JetBrains Mono">3</text><text x="14" y="124" text-anchor="middle" font-size="10" fill="#A2937D" font-family="JetBrains Mono">5</text>
+          </svg></div>
+        <div style="flex:1;min-width:220px">
+          <p style="margin:0 0 10px"><strong>Index finger</strong> on the 6th string, 3rd fret.<br><strong>Ring finger</strong> on the 5th string, 5th fret.</p>
+          <p style="margin:0;color:var(--muted);font-size:15px">Strum just those two strings. Thick and a little mean. That's correct.</p></div>
+      </div>
+      <div class="step">Now make it rhythmic — the palm mute</div>
+      <p>Rest the side of your strumming hand lightly on the strings near the bridge. The sound goes from ringing to a tight <em>chug</em> — 80% of why rock guitar sounds like rock guitar.</p>
+      <div class="tab"><pre>      chug chug   CHUG      chug chug  CHUG
+E|----3----3-----3---------3----3-----3----|
+A|----5----5-----5---------5----5-----5----|</pre></div>
+      <p class="cap">Same shape throughout. The music comes from the <em>rhythm</em> and the mute, not from moving your fingers.</p>
+      <div class="payoff"><div class="step">The payoff</div>
+        <p style="margin:0">Slide that two-finger shape to different frets and you're playing riffs. No chord name, no note, no theory — and you already sound like a band warming up.</p>
+        <button class="unlock-btn" onclick="markPlayed(this)">▶ Mark it played</button>
+        <div class="unlocked"><div class="big">⚡ POWER UNLOCKED</div><ul><li>Movable shapes you own: <strong>1 (every fret)</strong></li><li>Songs this shape appears in: <strong>thousands</strong></li><li>That's the end of the free preview — here's what's next ↓</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="eyebrow">You're in. Keep going.</div>
+    <div class="cta-card" id="ctaCard">
+      <h2>Get the full 9-stage method</h2>
+      <p style="color:var(--muted);max-width:520px;margin:0 auto">You just played a riff and a power chord. Seven more stages take you from here to strumming real songs, barre chords, and your first solo — same five-minutes-at-a-time, never-quit approach.</p>
+      <div class="cta-list">
+        <div class="row"><span>✓</span><div>Open chords &amp; the addictive 60-second change game</div></div>
+        <div class="row"><span>✓</span><div>The four chords behind most pop songs</div></div>
+        <div class="row"><span>✓</span><div>A live strum trainer with a real metronome</div></div>
+        <div class="row"><span>✓</span><div>The capo cheat &amp; the barre chord, finally made easy</div></div>
+        <div class="row"><span>✓</span><div>A playable solo box — improvise on day one</div></div>
+        <div class="row"><span>✓</span><div>The chromatic tuner, forever</div></div>
+      </div>
+      <div class="price">$24 <small>· one-time · yours forever</small></div>
+      <!-- TODO: replace "#" with your Gumroad / Payhip checkout link -->
+      <a class="cta-btn" id="ctaBtn" href="#">Get the full method →</a>
+      <div class="cta-nudge" id="ctaNudge"></div>
+    </div>
+  </section>
+
+  <footer>The First-Riff Method · free preview · made to be played, not read</footer>
+</div>
+
+<script>
+/* progress + CTA reveal */
+function markPlayed(btn){
+  var box=btn.parentElement.querySelector('.unlocked'); if(box) box.classList.add('show');
+  btn.disabled=true; btn.style.opacity=.5; btn.textContent='✓ played'; updateProgress();
+}
+function updateProgress(){
+  var all=document.querySelectorAll('.unlock-btn'), done=document.querySelectorAll('.unlock-btn:disabled').length;
+  document.getElementById('pcount').textContent=done;
+  document.getElementById('ptotal').textContent=all.length;
+  document.getElementById('pfill').style.width=(done/all.length*100)+'%';
+  if(done===all.length && all.length>0){
+    document.getElementById('ctaCard').classList.add('show');
+    document.getElementById('ctaNudge').textContent='🎉 Free preview complete — keep the momentum going.';
+  }
+}
+
+/* chromatic tuner */
+(function(){
+  const T_NOTES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+  const GTR=[{n:'E',m:40},{n:'A',m:45},{n:'D',m:50},{n:'G',m:55},{n:'B',m:59},{n:'e',m:64}];
+  const fMidi=m=>440*Math.pow(2,(m-69)/12);
+  const mFreq=f=>Math.round(12*(Math.log(f/440)/Math.LN2)+69);
+  const cents=(f,m)=>Math.floor(1200*Math.log(f/fMidi(m))/Math.LN2);
+  let an=null,buf=null,raf=null,stream=null,active=false,ctx=null;
+  function ac(){ ctx=ctx||new (window.AudioContext||window.webkitAudioContext)(); if(ctx.state==='suspended')ctx.resume(); return ctx; }
+  function autoCorrelate(b,sr){
+    let SIZE=b.length,rms=0; for(let i=0;i<SIZE;i++){const v=b[i];rms+=v*v;} rms=Math.sqrt(rms/SIZE); if(rms<0.01)return -1;
+    let r1=0,r2=SIZE-1,th=0.2;
+    for(let i=0;i<SIZE/2;i++){if(Math.abs(b[i])<th){r1=i;break;}}
+    for(let i=1;i<SIZE/2;i++){if(Math.abs(b[SIZE-i])<th){r2=SIZE-i;break;}}
+    b=b.slice(r1,r2); SIZE=b.length; const c=new Array(SIZE).fill(0);
+    for(let i=0;i<SIZE;i++)for(let j=0;j<SIZE-i;j++)c[i]+=b[j]*b[j+i];
+    let d=0; while(d<SIZE-1&&c[d]>c[d+1])d++;
+    let mv=-1,mp=-1; for(let i=d;i<SIZE;i++){if(c[i]>mv){mv=c[i];mp=i;}}
+    let T0=mp; const x1=c[T0-1]||0,x2=c[T0]||0,x3=c[T0+1]||0,a=(x1+x3-2*x2)/2,bb=(x3-x1)/2;
+    if(a)T0=T0-bb/(2*a); return T0>0?sr/T0:-1;
+  }
+  function refTone(m){ const a=ac(),t=a.currentTime,f=fMidi(m),o=a.createOscillator(),g=a.createGain();
+    o.type='sine'; o.frequency.value=f; o.connect(g); g.connect(a.destination);
+    g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.3,t+0.02);
+    g.gain.setValueAtTime(0.3,t+0.95); g.gain.exponentialRampToValueAtTime(0.0001,t+1.2); o.start(t); o.stop(t+1.25); }
+  function buildStrings(){ const w=document.getElementById('tStrings'); if(!w)return; w.innerHTML='';
+    GTR.forEach(g=>{ const b=document.createElement('button'); b.className='tchip'; b.id='tchip-'+g.m; b.textContent=g.n;
+      b.setAttribute('aria-label','play reference tone for '+g.n+' string'); b.addEventListener('click',()=>refTone(g.m)); w.appendChild(b); }); }
+  function reset(){ const n=document.getElementById('tNote'); if(!n)return; n.textContent='\u2014'; n.classList.remove('intune');
+    const nd=document.getElementById('tNeedle'); nd.style.left='50%'; nd.classList.remove('intune');
+    document.querySelectorAll('.tchip').forEach(c=>c.classList.remove('near','intune')); }
+  function render(f){
+    const m=mFreq(f), name=T_NOTES[((m%12)+12)%12], oct=Math.floor(m/12)-1, c=cents(f,m), inT=Math.abs(c)<=5;
+    const n=document.getElementById('tNote'); n.textContent=name+oct; n.classList.toggle('intune',inT);
+    const nd=document.getElementById('tNeedle'); let p=50+c; p=Math.max(2,Math.min(98,p)); nd.style.left=p+'%'; nd.classList.toggle('intune',inT);
+    let near=GTR[0],best=1e9; GTR.forEach(g=>{const d=Math.abs(m-g.m); if(d<best){best=d;near=g;}});
+    document.querySelectorAll('.tchip').forEach(c2=>c2.classList.remove('near','intune'));
+    const chip=document.getElementById('tchip-'+near.m); if(chip){chip.classList.add('near'); if(inT&&near.m===m)chip.classList.add('intune');}
+  }
+  function tick(){ if(!active)return; an.getFloatTimeDomainData(buf); const f=autoCorrelate(buf,ac().sampleRate);
+    if(f>0&&isFinite(f))render(f); raf=requestAnimationFrame(tick); }
+  async function start(){
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){ unavailable(); return; }
+    try{ stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,autoGainControl:false,noiseSuppression:false}}); }
+    catch(e){ unavailable(); return; }
+    const a=ac(),src=a.createMediaStreamSource(stream); an=a.createAnalyser(); an.fftSize=2048; buf=new Float32Array(an.fftSize); src.connect(an); active=true;
+    document.getElementById('tunerStart').textContent='Stop'; document.getElementById('tunerStatus').textContent='Listening \u2014 pluck one string at a time.'; tick();
+  }
+  function stop(){ active=false; if(raf)cancelAnimationFrame(raf); if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}
+    const s=document.getElementById('tunerStart'); if(s)s.textContent='Start listening';
+    const st=document.getElementById('tunerStatus'); if(st)st.textContent='Stopped. Tap start to listen again.'; reset(); }
+  function unavailable(){ const st=document.getElementById('tunerStatus'); if(st)st.textContent='Mic blocked here (common inside in-app previews). Use the reference tones below \u2014 they always work.'; }
+  window.toggleTunerPanel=function(btn){ const p=document.getElementById('tunerPanel'); const open=p.classList.toggle('open'); btn.setAttribute('aria-expanded',open?'true':'false'); };
+  window.toggleTuner=function(){ if(active)stop(); else start(); };
+  buildStrings();
+})();
+
+updateProgress();
+</script>
