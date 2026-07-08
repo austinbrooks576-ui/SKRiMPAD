@@ -187,6 +187,52 @@ input[type=range]{width:100%;accent-color:var(--teal);height:20px;cursor:pointer
 
 /* Scrollbar for panels */
 .panel{scrollbar-width:thin;scrollbar-color:var(--bdr) transparent;}
+
+/* ---- LANDSCAPE ---- */
+@media (orientation:landscape){
+  /* Tighter header */
+  #header{padding:4px 10px;}
+  #vis-canvas{width:70px;height:22px;}
+  #logo{font-size:13px;}
+
+  /* Shorter tabs */
+  .tab{padding:6px 4px;font-size:9px;}
+
+  /* Less panel padding so content breathes */
+  .panel{padding:6px;}
+
+  /* PADS: 8 columns × 2 rows — pads become wide touch targets */
+  #pad-grid{grid-template-columns:repeat(8,1fr);gap:4px;margin-bottom:6px;}
+  .pad{aspect-ratio:unset;height:calc((100vw - 28px) / 16 * 1.5);}
+
+  /* SEQUENCER: slimmer rows to fit 16 tracks on screen */
+  .seq-step{height:13px;}
+  .seq-label{font-size:7.5px;}
+  #seq-wrap{padding:5px;}
+  #seq-grid{gap:2px;}
+  .seq-row{gap:2px;}
+
+  /* KEYBOARD: taller keys — the main prize in landscape */
+  #keyboard-wrap{height:220px;}
+  #keys-panel .mode-bar{margin-bottom:6px;}
+  #keys-oct{margin-top:5px;}
+
+  /* SYNTH: tighter spacing */
+  .synth-section{padding:6px;margin-bottom:6px;}
+  .knob{width:40px;height:40px;}
+  .knob-wrap{min-width:46px;}
+
+  /* FX: 3-column pedal grid */
+  #fx-panel .pedals{grid-template-columns:repeat(3,1fr);gap:6px;}
+
+  /* LOOP: tracks in 2 columns */
+  #loop-panel .loop-tracks{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+  .loop-track{padding:6px;}
+  .lt-waveform{height:22px;}
+
+  /* Transport buttons */
+  .tbtn{padding:7px;}
+}
 </style>
 </head>
 <body>
