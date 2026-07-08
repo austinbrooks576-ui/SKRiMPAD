@@ -75,7 +75,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--txt);font
 #seq-grid{display:grid;gap:4px;min-width:480px;}
 .seq-row{display:grid;grid-template-columns:56px repeat(16,1fr);gap:3px;align-items:center;}
 .seq-label{font-size:9px;font-weight:700;text-transform:uppercase;color:var(--mute);padding-right:4px;}
-.seq-step{height:22px;border-radius:4px;background:var(--surf3);border:1px solid var(--bdr);cursor:pointer;transition:all .08s;position:relative;}
+.seq-step{height:18px;border-radius:4px;background:var(--surf3);border:1px solid var(--bdr);cursor:pointer;transition:all .08s;position:relative;}
 .seq-step.on{border-color:transparent;}
 .seq-step.cur::before{content:'';position:absolute;top:-3px;left:50%;transform:translateX(-50%);width:3px;height:3px;border-radius:50%;background:var(--txt);}
 .seq-step.beat{background:var(--surf2);}
@@ -577,6 +577,9 @@ input[type=range]{width:100%;accent-color:var(--teal);height:20px;cursor:pointer
       <button class="tbtn" id="loop-all-stop">■ STOP ALL</button>
       <button class="tbtn" id="loop-all-clear">✕ CLEAR ALL</button>
     </div>
+    <div class="lm-btns" style="margin-top:8px">
+      <button class="tbtn" id="export-btn" style="border-color:var(--blue);color:var(--blue)">⬇ EXPORT AUDIO</button>
+    </div>
     <div class="row" style="margin-top:10px">
       <div class="range-wrap">
         <label>LOOP LENGTH <span id="loop-len-val">4</span> bars</label>
@@ -1047,7 +1050,7 @@ function playFX2(t) {
 // DRUM SEQUENCER
 // =============================================
 const SEQ_STEPS = 16;
-const SEQ_TRACKS = 8;
+const SEQ_TRACKS = 16;
 let seqPatterns = Array(SEQ_TRACKS).fill(null).map(() => new Array(SEQ_STEPS).fill(false));
 let seqPlaying = false;
 let seqStep = 0;
@@ -1214,7 +1217,7 @@ const looper = {
   tracks: Array(4).fill(null).map(() => ({
     events: [], duration: 0, startTime: 0,
     recording: false, playing: false, muted: false, volume: 1,
-    playTimer: null
+    playTimer: null, audioBuf: null, bufferSource: null, gainNode: null
   })),
   barsToMs() { return (4 * 60000 / parseInt(document.getElementById('bpm').value)) * parseInt(document.getElementById('loop-len').value); }
 };
@@ -1228,7 +1231,7 @@ function loopRecord(idx) {
     updateLoopUI(idx);
     return;
   }
-  tr.events = []; tr.recording = true; tr.startTime = performance.now();
+  tr.events = []; tr.audioBuf = null; tr.recording = true; tr.startTime = performance.now();
   updateLoopUI(idx);
 }
 
@@ -1244,14 +1247,26 @@ function loopPlay(idx) {
 function scheduleLoopPlay(idx) {
   const tr = looper.tracks[idx];
   if (!tr.playing) return;
-  const now = performance.now();
+  if (tr.audioBuf) {
+    if (tr.bufferSource) { try { tr.bufferSource.stop(); } catch(e){} }
+    const src = ctx.createBufferSource();
+    src.buffer = tr.audioBuf;
+    src.loop = true;
+    tr.gainNode = ctx.createGain();
+    tr.gainNode.gain.value = tr.volume;
+    src.connect(tr.gainNode);
+    tr.gainNode.connect(getOutput());
+    src.start();
+    tr.bufferSource = src;
+    return;
+  }
   tr.events.forEach(ev => {
-    const delay = ev.time % tr.duration;
     setTimeout(() => {
       if (!tr.playing || tr.muted) return;
       if (ev.type === 'drum') drumDefs[ev.drumIdx].fn(ctx.currentTime);
       else if (ev.type === 'note') noteOn(ev.midi);
-    }, delay);
+      else if (ev.type === 'noteoff') noteOff(ev.midi);
+    }, ev.time);
   });
   tr.playTimer = setTimeout(() => scheduleLoopPlay(idx), tr.duration);
 }
@@ -1260,6 +1275,7 @@ function loopStop(idx) {
   const tr = looper.tracks[idx];
   tr.playing = false;
   clearTimeout(tr.playTimer);
+  if (tr.bufferSource) { try { tr.bufferSource.stop(); } catch(e){} tr.bufferSource = null; }
   updateLoopUI(idx);
 }
 
@@ -1286,7 +1302,10 @@ function updateLoopUI(idx) {
   recBtn.textContent = tr.recording ? '■ STOP' : '● REC';
   playBtn.classList.toggle('playing', tr.playing);
   playBtn.textContent = tr.playing ? '■ STOP' : '▶ PLAY';
-  if (waveEl) waveEl.textContent = tr.duration ? `${(tr.duration/1000).toFixed(1)}s · ${tr.events.length} events` : 'Empty';
+  if (waveEl) {
+    if (tr.audioBuf) waveEl.textContent = `♪ Audio: ${tr.audioBuf.duration.toFixed(1)}s`;
+    else waveEl.textContent = tr.duration ? `${(tr.duration/1000).toFixed(1)}s · ${tr.events.length} events` : 'Empty';
+  }
 }
 
 // =============================================
@@ -1413,7 +1432,7 @@ function buildKeyboard() {
       const midi = (oct * 12) + noteNames.indexOf(note);
 
       const on = () => { initAudio(); noteOn(midi); loopCapture('note', { midi }); k.classList.add('pressed'); };
-      const off = () => { if (!sustainOn) noteOff(midi); k.classList.remove('pressed'); };
+      const off = () => { if (!sustainOn) { noteOff(midi); loopCapture('noteoff', { midi }); } k.classList.remove('pressed'); };
 
       k.addEventListener('touchstart', e => { e.preventDefault(); on(); }, { passive: false });
       k.addEventListener('touchend', e => { e.preventDefault(); off(); }, { passive: false });
@@ -1449,7 +1468,7 @@ function buildKeyboard() {
       const midi = oct * 12 + noteNames.indexOf(note);
 
       const on = () => { initAudio(); noteOn(midi); loopCapture('note', { midi }); k.classList.add('pressed'); };
-      const off = () => { if (!sustainOn) noteOff(midi); k.classList.remove('pressed'); };
+      const off = () => { if (!sustainOn) { noteOff(midi); loopCapture('noteoff', { midi }); } k.classList.remove('pressed'); };
       k.addEventListener('touchstart', e => { e.preventDefault(); on(); }, { passive: false });
       k.addEventListener('touchend', e => { e.preventDefault(); off(); }, { passive: false });
       k.addEventListener('mousedown', on);
@@ -1476,14 +1495,20 @@ function buildLoopTracks() {
       <div class="lt-btns">
         <button class="lt-btn rec-btn" data-track="${i}">● REC</button>
         <button class="lt-btn play-btn" data-track="${i}">▶ PLAY</button>
-        <button class="lt-btn" data-clear="${i}">✕ CLEAR</button>
+        <button class="lt-btn" data-clear="${i}">✕ CLR</button>
+        <button class="lt-btn import-btn" data-track="${i}" style="color:var(--teal);border-color:var(--teal)">⬆ IMP</button>
       </div>`;
     tr.querySelector('.rec-btn').addEventListener('click', () => loopRecord(i));
     tr.querySelector('.play-btn').addEventListener('click', () => loopPlay(i));
     tr.querySelector('[data-clear]').addEventListener('click', () => {
-      loopStop(i); looper.tracks[i].events = []; looper.tracks[i].duration = 0; updateLoopUI(i);
+      loopStop(i); looper.tracks[i].events = []; looper.tracks[i].audioBuf = null; looper.tracks[i].duration = 0; updateLoopUI(i);
     });
-    tr.querySelector('input[type=range]').addEventListener('input', e => { looper.tracks[i].volume = parseFloat(e.target.value); });
+    tr.querySelector('.import-btn').addEventListener('click', () => importAudioToTrack(i));
+    tr.querySelector('input[type=range]').addEventListener('input', e => {
+      const vol = parseFloat(e.target.value);
+      looper.tracks[i].volume = vol;
+      if (looper.tracks[i].gainNode) looper.tracks[i].gainNode.gain.value = vol;
+    });
     container.appendChild(tr);
   }
 }
@@ -1626,10 +1651,72 @@ document.getElementById('master-vol').addEventListener('input', e => {
 document.getElementById('loop-all-play').addEventListener('click', () => looper.tracks.forEach((_, i) => loopPlay(i)));
 document.getElementById('loop-all-stop').addEventListener('click', () => looper.tracks.forEach((_, i) => loopStop(i)));
 document.getElementById('loop-all-clear').addEventListener('click', () => {
-  looper.tracks.forEach((_, i) => { loopStop(i); looper.tracks[i].events = []; looper.tracks[i].duration = 0; updateLoopUI(i); });
+  looper.tracks.forEach((_, i) => { loopStop(i); looper.tracks[i].events = []; looper.tracks[i].audioBuf = null; looper.tracks[i].duration = 0; updateLoopUI(i); });
 });
 document.getElementById('loop-len').addEventListener('input', e => { document.getElementById('loop-len-val').textContent = e.target.value; });
 document.getElementById('loop-quant').addEventListener('input', e => { document.getElementById('loop-quant-val').textContent = e.target.value === '1' ? 'ON' : 'OFF'; });
+
+// =============================================
+// IMPORT / EXPORT
+// =============================================
+function importAudioToTrack(idx) {
+  if (!audioReady) initAudio();
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'audio/*';
+  inp.onchange = async e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      const arrayBuf = await file.arrayBuffer();
+      const audioBuf = await ctx.decodeAudioData(arrayBuf);
+      const tr = looper.tracks[idx];
+      loopStop(idx);
+      tr.audioBuf = audioBuf;
+      tr.events = [];
+      tr.duration = audioBuf.duration * 1000;
+      updateLoopUI(idx);
+      toast('Imported: ' + file.name.slice(0, 24));
+    } catch(err) {
+      toast('Import failed — unsupported format');
+    }
+  };
+  inp.click();
+}
+
+let exportRec = null, exportDest = null;
+
+function toggleExport() {
+  if (!audioReady) { toast('Start playing first'); return; }
+  const btn = document.getElementById('export-btn');
+  if (exportRec && exportRec.state === 'recording') {
+    exportRec.stop();
+  } else {
+    exportDest = ctx.createMediaStreamDestination();
+    masterGain.connect(exportDest);
+    exportRec = new MediaRecorder(exportDest.stream);
+    const chunks = [];
+    exportRec.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+    exportRec.onstop = () => {
+      const blob = new Blob(chunks, { type: exportRec.mimeType || 'audio/webm' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'first-riff-' + Date.now() + '.webm';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      try { masterGain.disconnect(exportDest); } catch(e2){}
+      exportDest = null; exportRec = null;
+      btn.textContent = '⬇ EXPORT AUDIO';
+      btn.style.background = ''; btn.style.color = 'var(--blue)';
+      toast('Saved — check Downloads folder');
+    };
+    exportRec.start();
+    btn.textContent = '■ STOP & SAVE';
+    btn.style.background = 'var(--red)'; btn.style.color = '#fff';
+    toast('Recording output... tap again to save');
+  }
+}
+
+document.getElementById('export-btn').addEventListener('click', toggleExport);
 
 // Init click → start audio
 document.body.addEventListener('touchstart', () => initAudio(), { once: true, passive: true });
