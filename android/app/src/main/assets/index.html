@@ -1088,6 +1088,7 @@ function seqStop() {
   seqStep = 0;
   clearSeqHighlight();
   document.getElementById('seq-play').classList.remove('play');
+  if (audioReady) allNotesOff();
 }
 
 function highlightSeqStep(s) {
@@ -1217,7 +1218,7 @@ const looper = {
   tracks: Array(4).fill(null).map(() => ({
     events: [], duration: 0, startTime: 0,
     recording: false, playing: false, muted: false, volume: 1,
-    playTimer: null, audioBuf: null, bufferSource: null, gainNode: null
+    playTimer: null, eventTimers: [], audioBuf: null, bufferSource: null, gainNode: null
   })),
   barsToMs() { return (4 * 60000 / parseInt(document.getElementById('bpm').value)) * parseInt(document.getElementById('loop-len').value); }
 };
@@ -1260,13 +1261,15 @@ function scheduleLoopPlay(idx) {
     tr.bufferSource = src;
     return;
   }
+  tr.eventTimers = [];
   tr.events.forEach(ev => {
-    setTimeout(() => {
+    const tid = setTimeout(() => {
       if (!tr.playing || tr.muted) return;
       if (ev.type === 'drum') drumDefs[ev.drumIdx].fn(ctx.currentTime);
       else if (ev.type === 'note') noteOn(ev.midi);
       else if (ev.type === 'noteoff') noteOff(ev.midi);
     }, ev.time);
+    tr.eventTimers.push(tid);
   });
   tr.playTimer = setTimeout(() => scheduleLoopPlay(idx), tr.duration);
 }
@@ -1275,7 +1278,10 @@ function loopStop(idx) {
   const tr = looper.tracks[idx];
   tr.playing = false;
   clearTimeout(tr.playTimer);
+  tr.eventTimers.forEach(clearTimeout);
+  tr.eventTimers = [];
   if (tr.bufferSource) { try { tr.bufferSource.stop(); } catch(e){} tr.bufferSource = null; }
+  allNotesOff();
   updateLoopUI(idx);
 }
 
