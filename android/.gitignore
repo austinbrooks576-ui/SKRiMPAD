@@ -1,0 +1,34 @@
+# Gradle
+.gradle/
+gradle/
+*.gradle
+build/
+
+# Android Studio
+.idea/
+*.iml
+*.iws
+*.ipr
+local.properties
+
+# Signing
+*.keystore
+*.jks
+keystore.properties
+signing.properties
+
+# Build output
+app/build/
+.DS_Store
+
+# Environment
+.env
+*.pem
+*.p8
+*.p12
+
+# Misc
+*.apk
+*.aar
+*.jar
+*.zip
