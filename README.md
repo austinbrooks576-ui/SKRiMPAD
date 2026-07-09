@@ -1,38 +1,51 @@
-Most people who pick up a guitar quit in the first few weeks. Not because they can't do it — because every beginner book and app front-loads boring theory, note-reading, and finger drills before you ever play something that sounds like music. By the time your fingertips hurt and the dreaded barre chord appears, the guitar's in the closet.
+# SKRiMPAD
 
-The First-Riff Method is built around the opposite idea: get you sounding good immediately, then keep you hooked long enough to actually get good.
+A full-featured browser-based music production studio, available as an Android app and Windows desktop app.
 
-You'll play a recognizable riff in the first five minutes — one finger, zero theory. From there, nine short stages carry you all the way to strumming real songs and playing your first solo. Every stage ends in something you can actually play. It's the anti-quit guitar method.
+## Features
 
-And it's genuinely interactive — not a PDF. Inside you get:
+- **20 Drum Pads** — synthesized kicks, snares, hi-hats, cymbals, claps, bass & FX with per-pad volume faders
+- **Step Sequencer** — 20-track × 16-step drum machine with BPM control and universal play/pause
+- **Sound Library** — 14 onboard synthesized sounds across 5 categories (KICKS, SNARES, BASS, SYNTH, FX)
+- **Dual/Layer Sampling** — load two samples per pad (WAV, MP3, OGG, AAC, FLAC)
+- **Synthesizer** — dual-oscillator subtractive synth with ADSR envelope, filter, LFO, and wave shaper
+- **Keyboard** — 2-octave piano with 6 voice modes: Electronic, Piano, Bass, Pad, LASER, ROBOT
+- **FX Chain** — Drive, Delay, Reverb, Chorus, Phaser, Compressor, CLIP (hard/soft saturation pedal)
+- **Loop Machine** — 4-track event looper with record/play/overdub
+- **AI Composer** — real-time key detection + style-based drum & melody generation
+- **Studio Layout** — fullscreen desktop mode with resizable tiles, skins, and drag-to-swap panels
 
+## Downloads
 
-🎸 A built-in chromatic tuner — so step one isn't "go buy a tuner"
-🔁 A 60-second chord-change game that turns the most important skill into a high score you beat
-🥁 A live strum trainer with a real metronome
-🎶 A tap-to-hear chord explorer and a playable pentatonic fretboard you actually solo on
-📈 A progress tracker that fills as you go
+Download the latest APK or Windows installer from [Releases](https://github.com/austinbrooks576-ui/SKRiMPAD/releases).
 
+### Android APK
+1. Download `app-debug.apk`
+2. On Android: Settings → Security → allow "Install unknown apps"
+3. Open the APK to install
 
-What's inside — 9 stages:
-0. The First Riff — sound like music in 5 minutes
+### Windows
+- **Installer** — installs to Program Files with Start Menu + Desktop shortcuts
+- **Portable** — runs from anywhere, no install needed
 
+**Requirements:** Windows 10+ (64-bit)
 
-Power chords & the palm mute
-Your first chord change (the 60-second game)
-The four chords behind most pop songs
-Strumming & feel — the live metronome
-The capo cheat — every key, same easy shapes
-The barre chord, finally made easy
-Your first solo — a playable pentatonic box
-Make it yours — jam, write, play by ear
-…plus the chromatic tuner, yours forever.
+## Build
 
+### Android APK
+```bash
+cd android
+./gradlew assembleDebug
+# APK: android/app/build/outputs/apk/debug/app-debug.apk
+```
 
-Who it's for: total beginners, anyone who's tried and quit, adults finally doing it, parents teaching a kid. If you can press a string and tap a button, you can start.
+### Windows (Electron)
+```bash
+cd electron
+npm install
+npm run build:win
+# Output: electron/dist/
+```
 
-How it works: opens right in your web browser — phone, tablet, or computer. Nothing to install. Yours forever, with free updates.
-
-Try it free first: the first two lessons and the tuner are free → [YOUR FREE DEMO LINK]
-
-One-time price. No subscription. 30-day money-back guarantee — if it doesn't get you playing, full refund.
+### Web
+Open `android/app/src/main/assets/index.html` in any modern browser — no server needed.

@@ -5,7 +5,7 @@
   "main": "main.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/austinbrooks576-ui/First-Riff-Method.git"
+    "url": "https://github.com/austinbrooks576-ui/SKRiMPAD.git"
   },
   "scripts": {
     "start": "electron .",
